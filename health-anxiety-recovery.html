@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ground — Health Anxiety Recovery</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f0ea;
+    --surface: #fffdf9;
+    --surface2: #f0ebe3;
+    --ink: #2a2320;
+    --ink2: #7a6e68;
+    --accent: #c4714a;
+    --accent-soft: #f0d9cd;
+    --green: #4a7c59;
+    --green-soft: #d4e8da;
+    --blue: #3d6b8a;
+    --blue-soft: #cfe2ef;
+    --warn: #a05c2e;
+    --border: rgba(42,35,32,0.1);
+    --radius: 16px;
+    --shadow: 0 2px 20px rgba(42,35,32,0.07);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(245,240,234,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 0;
+    padding: 0 20px;
+    height: 56px;
+  }
+  .nav-brand {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    color: var(--accent);
+    margin-right: auto;
+    letter-spacing: -0.3px;
+  }
+  .nav-tabs {
+    display: flex; gap: 2px;
+  }
+  .nav-tab {
+    background: none; border: none; cursor: pointer;
+    padding: 6px 14px; border-radius: 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 500;
+    color: var(--ink2);
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .nav-tab.active {
+    background: var(--ink);
+    color: #fff;
+  }
+  .nav-tab:hover:not(.active) { background: var(--surface2); color: var(--ink); }
+
+  /* ── PAGES ── */
+  .page { display: none; padding: 28px 20px 80px; max-width: 600px; margin: 0 auto; }
+  .page.active { display: block; }
+
+  /* ── TYPOGRAPHY ── */
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px; line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px; margin-bottom: 12px;
+  }
+  .subtitle { color: var(--ink2); font-size: 14px; margin-bottom: 28px; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .card-label {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.8px;
+    text-transform: uppercase; color: var(--ink2);
+    margin-bottom: 10px;
+  }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 12px 22px; border-radius: 50px;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+    cursor: pointer; border: none; transition: all 0.2s;
+    text-decoration: none;
+  }
+  .btn-primary { background: var(--ink); color: #fff; }
+  .btn-primary:hover { background: #3d3330; transform: translateY(-1px); }
+  .btn-accent { background: var(--accent); color: #fff; }
+  .btn-accent:hover { background: #b3613d; transform: translateY(-1px); }
+  .btn-ghost { background: var(--surface2); color: var(--ink); }
+  .btn-ghost:hover { background: var(--border); }
+  .btn-green { background: var(--green); color: #fff; }
+  .btn-green:hover { background: #3d6649; transform: translateY(-1px); }
+  .btn-block { display: flex; width: 100%; margin-bottom: 10px; }
+  .btn-sm { padding: 8px 16px; font-size: 13px; }
+
+  /* ── FORM ELEMENTS ── */
+  label { font-size: 13px; font-weight: 500; display: block; margin-bottom: 6px; }
+  input[type=text], input[type=number], textarea, select {
+    width: 100%; padding: 11px 14px; border-radius: 10px;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    font-family: 'DM Sans', sans-serif; font-size: 14px;
+    color: var(--ink); margin-bottom: 14px;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+  input:focus, textarea:focus, select:focus { border-color: var(--accent); }
+  textarea { resize: vertical; min-height: 80px; }
+
+  /* ── RANGE SLIDER ── */
+  input[type=range] {
+    -webkit-appearance: none; width: 100%; height: 6px;
+    background: var(--surface2); border-radius: 3px;
+    margin: 8px 0 4px; border: none; padding: 0;
+    cursor: pointer;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 20px; height: 20px;
+    background: var(--accent); border-radius: 50%;
+    box-shadow: 0 1px 4px rgba(196,113,74,0.4);
+  }
+
+  /* ── CHIPS ── */
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  .chip {
+    padding: 7px 14px; border-radius: 20px; font-size: 13px;
+    border: 1.5px solid var(--border); background: var(--surface);
+    cursor: pointer; transition: all 0.15s; user-select: none;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .chip.selected { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .chip:hover:not(.selected) { border-color: var(--accent); color: var(--accent); }
+
+  /* ── DIVIDER ── */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+  /* ── BADGE ── */
+  .badge {
+    display: inline-block; padding: 3px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 500;
+  }
+  .badge-green { background: var(--green-soft); color: var(--green); }
+  .badge-blue { background: var(--blue-soft); color: var(--blue); }
+  .badge-warm { background: var(--accent-soft); color: var(--warn); }
+
+  /* ── PROGRESS ── */
+  .progress-bar {
+    height: 8px; border-radius: 4px;
+    background: var(--surface2); overflow: hidden;
+    margin: 8px 0;
+  }
+  .progress-fill {
+    height: 100%; border-radius: 4px;
+    background: var(--accent); transition: width 0.4s ease;
+  }
+
+  /* ═══════════════════════════════════════
+     HOME PAGE
+  ═══════════════════════════════════════ */
+  .streak-banner {
+    background: linear-gradient(135deg, #2a2320 0%, #4a3830 100%);
+    border-radius: var(--radius);
+    padding: 22px; color: #fff;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .streak-number {
+    font-family: 'DM Serif Display', serif;
+    font-size: 48px; line-height: 1; color: var(--accent);
+  }
+  .streak-label { font-size: 12px; color: rgba(255,255,255,0.6); }
+  .quote-card {
+    background: var(--accent-soft);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 16px 18px; margin-bottom: 20px;
+    font-style: italic; color: var(--warn);
+    font-family: 'DM Serif Display', serif;
+    font-size: 15px;
+  }
+  .quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+  .quick-card {
+    background: var(--surface); border-radius: var(--radius);
+    padding: 18px 16px; border: 1px solid var(--border);
+    cursor: pointer; transition: all 0.2s;
+    text-align: left; box-shadow: var(--shadow);
+  }
+  .quick-card:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(42,35,32,0.1); }
+  .quick-icon { font-size: 24px; margin-bottom: 8px; }
+  .quick-title { font-weight: 500; font-size: 14px; }
+  .quick-desc { font-size: 12px; color: var(--ink2); margin-top: 2px; }
+
+  /* ═══════════════════════════════════════
+     EXPOSURE LOG
+  ═══════════════════════════════════════ */
+  .log-entry {
+    background: var(--surface); border-radius: 12px;
+    padding: 14px 16px; margin-bottom: 10px;
+    border: 1px solid var(--border);
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .log-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--accent); margin-top: 5px; flex-shrink: 0;
+  }
+  .log-entry-title { font-weight: 500; font-size: 14px; }
+  .log-entry-meta { font-size: 12px; color: var(--ink2); margin-top: 2px; }
+  .log-empty { text-align: center; padding: 40px 20px; color: var(--ink2); font-size: 14px; }
+
+  /* ═══════════════════════════════════════
+     EXERCISES
+  ═══════════════════════════════════════ */
+  .exercise-card {
+    background: var(--surface); border-radius: var(--radius);
+    padding: 20px; margin-bottom: 14px;
+    border: 1px solid var(--border); box-shadow: var(--shadow);
+  }
+  .exercise-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 10px; }
+  .exercise-emoji { font-size: 28px; }
+  .exercise-title { font-weight: 500; font-size: 15px; }
+  .exercise-desc { font-size: 13px; color: var(--ink2); margin-top: 3px; }
+  .exercise-steps {
+    list-style: none; margin: 12px 0;
+  }
+  .exercise-steps li {
+    padding: 8px 0; font-size: 13px; border-bottom: 1px solid var(--border);
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .exercise-steps li:last-child { border-bottom: none; }
+  .step-num {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--accent-soft); color: var(--warn);
+    font-size: 11px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .collapsible-body { display: none; }
+  .collapsible-body.open { display: block; }
+  .expand-btn {
+    background: none; border: none; cursor: pointer;
+    font-size: 13px; color: var(--accent); font-weight: 500;
+    padding: 6px 0; font-family: 'DM Sans', sans-serif;
+  }
+
+  /* ═══════════════════════════════════════
+     PANIC TOOL
+  ═══════════════════════════════════════ */
+  #panic-page {
+    background: #1a1210;
+    min-height: calc(100vh - 56px);
+    padding: 28px 20px 80px;
+  }
+  #panic-page h1 { color: #fff; }
+  #panic-page .subtitle { color: rgba(255,255,255,0.5); }
+
+  .panic-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius); padding: 20px; margin-bottom: 14px;
+  }
+  .panic-card .card-label { color: rgba(255,255,255,0.4); }
+
+  .demand-box {
+    border: 2px solid var(--accent);
+    border-radius: var(--radius); padding: 24px;
+    text-align: center; margin-bottom: 14px;
+    background: rgba(196,113,74,0.08);
+  }
+  .demand-text {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px; color: #fff;
+    line-height: 1.4; margin-bottom: 16px;
+  }
+  #demand-btn {
+    background: var(--accent); color: #fff;
+    font-size: 16px; padding: 16px 32px;
+    border-radius: 50px; border: none; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; font-weight: 500;
+    width: 100%; transition: all 0.15s;
+  }
+  #demand-btn:active { transform: scale(0.98); }
+
+  .intensity-display {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .intensity-label { color: rgba(255,255,255,0.7); font-size: 14px; }
+  .intensity-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px; color: var(--accent);
+  }
+  .panic-progress {
+    height: 10px; border-radius: 5px;
+    background: rgba(255,255,255,0.1); overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .panic-progress-fill {
+    height: 100%; border-radius: 5px;
+    background: var(--accent); transition: width 0.5s ease;
+  }
+
+  .reminder-list { list-style: none; }
+  .reminder-list li {
+    padding: 10px 0; color: rgba(255,255,255,0.8); font-size: 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex; gap: 10px;
+  }
+  .reminder-list li:last-child { border-bottom: none; }
+  .reminder-icon { color: var(--accent); font-size: 16px; flex-shrink: 0; }
+
+  .timer-ring {
+    width: 100px; height: 100px; margin: 0 auto 20px;
+    position: relative; display: flex; align-items: center; justify-content: center;
+  }
+  .timer-ring svg { position: absolute; top: 0; left: 0; transform: rotate(-90deg); }
+  .timer-ring circle {
+    fill: none; stroke-width: 5;
+  }
+  .timer-track { stroke: rgba(255,255,255,0.1); }
+  .timer-fill { stroke: var(--accent); stroke-linecap: round; transition: stroke-dashoffset 1s linear; }
+  .timer-text {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px; color: #fff; z-index: 1;
+  }
+
+  /* ═══════════════════════════════════════
+     MISC
+  ═══════════════════════════════════════ */
+  .flex-between { display: flex; align-items: center; justify-content: space-between; }
+  .mt-4 { margin-top: 4px; }
+  .mt-8 { margin-top: 8px; }
+  .mt-16 { margin-top: 16px; }
+  .mb-0 { margin-bottom: 0; }
+  .text-sm { font-size: 13px; }
+  .text-muted { color: var(--ink2); }
+  .text-center { text-align: center; }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px);
+    background: var(--ink); color: #fff; padding: 12px 20px; border-radius: 50px;
+    font-size: 13px; transition: transform 0.3s ease; z-index: 999;
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 400px) {
+    .nav-tab { padding: 6px 10px; font-size: 12px; }
+    .quick-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">Ground</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('home')">Home</button>
+    <button class="nav-tab" onclick="showPage('log')">Log</button>
+    <button class="nav-tab" onclick="showPage('exercises')">Practice</button>
+    <button class="nav-tab" onclick="showPage('panic')">🆘 Panic</button>
+  </div>
+</nav>
+
+<!-- ══════════ HOME ══════════ -->
+<div id="home-page" class="page active">
+  <h1>Good to see you.</h1>
+  <p class="subtitle">Your daily recovery space. Small steps, every day.</p>
+
+  <div class="streak-banner">
+    <div>
+      <div class="streak-label">DAY STREAK</div>
+      <div class="streak-number" id="streak-display">0</div>
+      <div class="streak-label" style="margin-top:2px">days in a row ✦</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:13px; color:rgba(255,255,255,0.6); margin-bottom:6px">Today</div>
+      <button class="btn btn-accent btn-sm" onclick="markToday()">Check In</button>
+    </div>
+  </div>
+
+  <div class="quote-card" id="daily-quote"></div>
+
+  <h2>Quick Start</h2>
+  <div class="quick-grid">
+    <button class="quick-card" onclick="showPage('log'); openLogForm()">
+      <div class="quick-icon">📓</div>
+      <div class="quick-title">Log Exposure</div>
+      <div class="quick-desc">Record what you faced today</div>
+    </button>
+    <button class="quick-card" onclick="showPage('exercises')">
+      <div class="quick-icon">🧘</div>
+      <div class="quick-title">Daily Practice</div>
+      <div class="quick-desc">Structured exercises</div>
+    </button>
+    <button class="quick-card" onclick="showPage('panic')">
+      <div class="quick-icon">🌊</div>
+      <div class="quick-title">Panic Tool</div>
+      <div class="quick-desc">Ride the wave now</div>
+    </button>
+    <button class="quick-card" onclick="showPage('log')">
+      <div class="quick-icon">📈</div>
+      <div class="quick-title">My Progress</div>
+      <div class="quick-desc">See your journey</div>
+    </button>
+  </div>
+
+  <div class="card" style="margin-top:20px">
+    <div class="card-label">Why This Works</div>
+    <p class="text-sm text-muted">Health anxiety thrives on <strong style="color:var(--ink)">avoidance</strong>. Every time you check, reassure-seek, or avoid a sensation — your brain learns "that was dangerous." Exposure + sitting with discomfort teaches your nervous system the truth: <strong style="color:var(--ink)">sensations are uncomfortable, not deadly.</strong></p>
+  </div>
+</div>
+
+<!-- ══════════ LOG ══════════ -->
+<div id="log-page" class="page">
+  <div class="flex-between" style="margin-bottom:20px">
+    <div>
+      <h1>Exposure Log</h1>
+      <p class="subtitle mb-0">What did you face today?</p>
+    </div>
+    <button class="btn btn-accent btn-sm" onclick="openLogForm()">+ New</button>
+  </div>
+
+  <!-- LOG FORM -->
+  <div id="log-form" class="card" style="display:none; border: 1.5px solid var(--accent)">
+    <div class="card-label">New Entry</div>
+
+    <label>Sensation / Trigger</label>
+    <div class="chips" id="sensation-chips">
+      <span class="chip" onclick="toggleChip(this)">Fast heartbeat</span>
+      <span class="chip" onclick="toggleChip(this)">Chest tightness</span>
+      <span class="chip" onclick="toggleChip(this)">Shortness of breath</span>
+      <span class="chip" onclick="toggleChip(this)">Heavy breathing</span>
+      <span class="chip" onclick="toggleChip(this)">Dizziness</span>
+      <span class="chip" onclick="toggleChip(this)">Numbness / tingling</span>
+      <span class="chip" onclick="toggleChip(this)">Head pressure</span>
+      <span class="chip" onclick="toggleChip(this)">Pain fear</span>
+      <span class="chip" onclick="toggleChip(this)">Catastrophic thought</span>
+      <span class="chip" onclick="toggleChip(this)">Urge to check</span>
+    </div>
+
+    <label>Catastrophic thought (optional)</label>
+    <input type="text" id="log-thought" placeholder="e.g. 'What if this is a heart attack?'" />
+
+    <label>Anxiety before (0–10)</label>
+    <input type="range" id="before-range" min="0" max="10" value="5" oninput="document.getElementById('before-val').textContent=this.value">
+    <div class="flex-between text-sm text-muted"><span>0 — calm</span><span id="before-val">5</span><span>10 — peak</span></div>
+
+    <div style="margin-top:14px"></div>
+    <label>What I did (exposure / coping)</label>
+    <div class="chips" id="coping-chips">
+      <span class="chip" onclick="toggleChip(this)">Sat with it</span>
+      <span class="chip" onclick="toggleChip(this)">No checking</span>
+      <span class="chip" onclick="toggleChip(this)">Demanded it worsen</span>
+      <span class="chip" onclick="toggleChip(this)">Stayed present</span>
+      <span class="chip" onclick="toggleChip(this)">Used panic tool</span>
+      <span class="chip" onclick="toggleChip(this)">Delayed reassurance</span>
+      <span class="chip" onclick="toggleChip(this)">Continued activity</span>
+    </div>
+
+    <label>Anxiety after (0–10)</label>
+    <input type="range" id="after-range" min="0" max="10" value="3" oninput="document.getElementById('after-val').textContent=this.value">
+    <div class="flex-between text-sm text-muted"><span>0 — calm</span><span id="after-val">3</span><span>10 — peak</span></div>
+
+    <div style="margin-top:14px"></div>
+    <label>Notes (optional)</label>
+    <textarea id="log-notes" placeholder="How did it feel? What did you learn?" rows="3"></textarea>
+
+    <div style="display:flex; gap:10px">
+      <button class="btn btn-primary" onclick="saveEntry()" style="flex:1">Save Entry</button>
+      <button class="btn btn-ghost" onclick="closeLogForm()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- ENTRIES -->
+  <div id="log-entries"></div>
+</div>
+
+<!-- ══════════ EXERCISES ══════════ -->
+<div id="exercises-page" class="page">
+  <h1>Daily Practice</h1>
+  <p class="subtitle">Evidence-based exercises for health anxiety recovery.</p>
+
+  <!-- EXERCISE 1 -->
+  <div class="exercise-card">
+    <div class="exercise-header">
+      <div class="exercise-emoji">💓</div>
+      <div>
+        <div class="exercise-title">Intentional Sensation Induction</div>
+        <div class="exercise-desc">Deliberately provoke the sensations you fear, on your terms.</div>
+      </div>
+    </div>
+    <div class="flex-between">
+      <span class="badge badge-warm">Interoceptive Exposure</span>
+      <button class="expand-btn" onclick="toggleExercise(this)">Show steps ↓</button>
+    </div>
+    <div class="collapsible-body">
+      <hr class="divider">
+      <p class="text-sm text-muted" style="margin-bottom:12px">This teaches your brain that the sensations themselves are not dangerous — you created them deliberately and survived.</p>
+      <ul class="exercise-steps">
+        <li><span class="step-num">1</span>Choose one sensation: fast heartbeat (run in place 60s), shortness of breath (breathe through a straw for 30s), or dizziness (spin in a chair 10x).</li>
+        <li><span class="step-num">2</span>Deliberately trigger it. Go all in — the more you commit, the stronger the learning.</li>
+        <li><span class="step-num">3</span>Notice the sensations. Label them: "fast heartbeat," "chest tightness." Do not judge.</li>
+        <li><span class="step-num">4</span>Sit with it for 2–3 minutes. Do NOT reassure yourself it will pass. Just observe.</li>
+        <li><span class="step-num">5</span>Notice when it subsides. Log how your anxiety level changed.</li>
+      </ul>
+      <button class="btn btn-ghost btn-sm" onclick="showPage('log'); openLogForm()">Log this exercise →</button>
+    </div>
+  </div>
+
+  <!-- EXERCISE 2 -->
+  <div class="exercise-card">
+    <div class="exercise-header">
+      <div class="exercise-emoji">🧠</div>
+      <div>
+        <div class="exercise-title">Catastrophic Thought Defusion</div>
+        <div class="exercise-desc">Unhook from "what if" spirals without reassurance-seeking.</div>
+      </div>
+    </div>
+    <div class="flex-between">
+      <span class="badge badge-blue">Cognitive Defusion</span>
+      <button class="expand-btn" onclick="toggleExercise(this)">Show steps ↓</button>
+    </div>
+    <div class="collapsible-body">
+      <hr class="divider">
+      <p class="text-sm text-muted" style="margin-bottom:12px">The goal is not to disprove the thought — it's to stop treating it as a fact that requires action.</p>
+      <ul class="exercise-steps">
+        <li><span class="step-num">1</span>Write down the exact thought: "This chest pain means I'm having a heart attack."</li>
+        <li><span class="step-num">2</span>Reframe as a story: "I notice I'm having the thought that this chest pain means I'm having a heart attack."</li>
+        <li><span class="step-num">3</span>Say it out loud in a silly voice, or extremely slowly. This breaks the emotional grip.</li>
+        <li><span class="step-num">4</span>Ask: "Has this thought been helpful? Is it based on evidence, or is it anxiety talking?"</li>
+        <li><span class="step-num">5</span>Resist looking it up, asking anyone, or seeking reassurance. Uncertainty is tolerable.</li>
+      </ul>
+      <button class="btn btn-ghost btn-sm" onclick="showPage('log'); openLogForm()">Log this exercise →</button>
+    </div>
+  </div>
+
+  <!-- EXERCISE 3 -->
+  <div class="exercise-card">
+    <div class="exercise-header">
+      <div class="exercise-emoji">🌊</div>
+      <div>
+        <div class="exercise-title">Sensation Surfing</div>
+        <div class="exercise-desc">Ride the wave of discomfort without fighting or fleeing.</div>
+      </div>
+    </div>
+    <div class="flex-between">
+      <span class="badge badge-green">Mindful Acceptance</span>
+      <button class="expand-btn" onclick="toggleExercise(this)">Show steps ↓</button>
+    </div>
+    <div class="collapsible-body">
+      <hr class="divider">
+      <ul class="exercise-steps">
+        <li><span class="step-num">1</span>When a sensation arises, resist the urge to make it go away. Instead, get curious.</li>
+        <li><span class="step-num">2</span>Describe it like a scientist: "Pressure in the center of my chest, about 4cm wide. Mild pulsing. Intensity: 6/10."</li>
+        <li><span class="step-num">3</span>Track it: is it getting stronger, weaker, moving? Treat it like weather you're observing.</li>
+        <li><span class="step-num">4</span>Breathe normally. Not to calm down — just breathe naturally and keep observing.</li>
+        <li><span class="step-num">5</span>Stay with it for at least 10 minutes. Notice it ebbs and flows — it was never static.</li>
+      </ul>
+      <button class="btn btn-ghost btn-sm" onclick="showPage('log'); openLogForm()">Log this exercise →</button>
+    </div>
+  </div>
+
+  <!-- EXERCISE 4 -->
+  <div class="exercise-card">
+    <div class="exercise-header">
+      <div class="exercise-emoji">🚫</div>
+      <div>
+        <div class="exercise-title">Reassurance Delay & Resist</div>
+        <div class="exercise-desc">Break the checking and reassurance cycle.</div>
+      </div>
+    </div>
+    <div class="flex-between">
+      <span class="badge badge-warm">Behavioral</span>
+      <button class="expand-btn" onclick="toggleExercise(this)">Show steps ↓</button>
+    </div>
+    <div class="collapsible-body">
+      <hr class="divider">
+      <p class="text-sm text-muted" style="margin-bottom:12px">Checking and reassurance-seeking are the fuel of health anxiety. Every check relieves briefly, then demands more.</p>
+      <ul class="exercise-steps">
+        <li><span class="step-num">1</span>Identify today's urge: Googling symptoms, checking pulse, asking someone for reassurance.</li>
+        <li><span class="step-num">2</span>Set a delay: "I will wait 20 minutes before doing anything."</li>
+        <li><span class="step-num">3</span>During those 20 minutes, continue what you were doing. Don't fight the urge, just delay it.</li>
+        <li><span class="step-num">4</span>If anxiety peaked and passed in that time — you've proven you can tolerate uncertainty.</li>
+        <li><span class="step-num">5</span>Increase the delay each day: 20min → 1hr → 3hr → 24hr → never.</li>
+      </ul>
+      <button class="btn btn-ghost btn-sm" onclick="showPage('log'); openLogForm()">Log this exercise →</button>
+    </div>
+  </div>
+
+  <!-- EXERCISE 5 -->
+  <div class="exercise-card">
+    <div class="exercise-header">
+      <div class="exercise-emoji">📋</div>
+      <div>
+        <div class="exercise-title">Worst Case Acceptance Script</div>
+        <div class="exercise-desc">Face the feared outcome directly, without escape.</div>
+      </div>
+    </div>
+    <div class="flex-between">
+      <span class="badge badge-blue">Imaginal Exposure</span>
+      <button class="expand-btn" onclick="toggleExercise(this)">Show steps ↓</button>
+    </div>
+    <div class="collapsible-body">
+      <hr class="divider">
+      <p class="text-sm text-muted" style="margin-bottom:12px">The goal is not reassurance — it's to reduce the emotional charge of the feared scenario through repeated exposure to it.</p>
+      <ul class="exercise-steps">
+        <li><span class="step-num">1</span>Write out your worst fear in detail: "I have chest pain and it turns out to be a heart attack. I collapse..."</li>
+        <li><span class="step-num">2</span>Read it aloud, slowly, 3 times. Let the anxiety rise. Don't stop or reassure yourself.</li>
+        <li><span class="step-num">3</span>Each time you read it, notice if your anxiety peaks and then — gradually — decreases.</li>
+        <li><span class="step-num">4</span>Repeat daily for 2 weeks with the same script. The fear loses its power through repetition.</li>
+        <li><span class="step-num">5</span>This is not about convincing yourself it won't happen. It's about tolerating the uncertainty.</li>
+      </ul>
+      <button class="btn btn-ghost btn-sm" onclick="showPage('log'); openLogForm()">Log this exercise →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PANIC TOOL ══════════ -->
+<div id="panic-page" class="page" style="display:none">
+  <h1 style="color:#fff">Ride the Wave.</h1>
+  <p class="subtitle">You're going to lean in, not run. This passes.</p>
+
+  <!-- DEMAND TOOL -->
+  <div class="demand-box">
+    <div class="demand-text" id="demand-phrase">I demand this gets worse.<br>Give me everything you've got.</div>
+    <button id="demand-btn" onclick="cycleDemand()">Say This Out Loud 🔊</button>
+  </div>
+
+  <div class="panic-card">
+    <div class="card-label">Track Your Intensity</div>
+    <div class="intensity-display">
+      <span class="intensity-label">Current anxiety level</span>
+      <span class="intensity-value" id="intensity-num">—</span>
+    </div>
+    <div class="panic-progress"><div class="panic-progress-fill" id="panic-bar" style="width:0%"></div></div>
+    <div class="chips" style="margin-bottom:0">
+      <span class="chip" style="color:#fff;border-color:rgba(255,255,255,0.2);background:rgba(255,255,255,0.06)" onclick="setIntensity(this,2)">2</span>
+      <span class="chip" style="color:#fff;border-color:rgba(255,255,255,0.2);background:rgba(255,255,255,0.06)" onclick="setIntensity(this,4)">4</span>
+      <span class="chip" style="color:#fff;border-color:rgba(255,255,255,0.2);background:rgba(255,255,255,0.06)" onclick="setIntensity(this,6)">6</span>
+      <span class="chip" style="color:#fff;border-color:rgba(255,255,255,0.2);background:rgba(255,255,255,0.06)" onclick="setIntensity(this,8)">8</span>
+      <span class="chip" style="color:#fff;border-color:rgba(255,255,255,0.2);background:rgba(255,255,255,0.06)" onclick="setIntensity(this,10)">10</span>
+    </div>
+  </div>
+
+  <!-- TIMER -->
+  <div class="panic-card" style="text-align:center">
+    <div class="card-label">SURF THE WAVE — SET A TIMER</div>
+    <div class="timer-ring">
+      <svg width="100" height="100" viewBox="0 0 100 100">
+        <circle class="timer-track" cx="50" cy="50" r="45"/>
+        <circle class="timer-fill" id="timer-circle" cx="50" cy="50" r="45"
+          stroke-dasharray="283" stroke-dashoffset="283"/>
+      </svg>
+      <div class="timer-text" id="timer-display">5:00</div>
+    </div>
+    <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-bottom:14px">
+      <button class="btn btn-ghost btn-sm" style="background:rgba(255,255,255,0.08);color:#fff" onclick="startTimer(120)">2 min</button>
+      <button class="btn btn-ghost btn-sm" style="background:rgba(255,255,255,0.08);color:#fff" onclick="startTimer(300)">5 min</button>
+      <button class="btn btn-ghost btn-sm" style="background:rgba(255,255,255,0.08);color:#fff" onclick="startTimer(600)">10 min</button>
+      <button class="btn btn-ghost btn-sm" style="background:rgba(255,255,255,0.08);color:#fff" onclick="stopTimer()">Stop</button>
+    </div>
+    <p style="color:rgba(255,255,255,0.5); font-size:13px">Stay with it for the full time. Don't leave or check anything.</p>
+  </div>
+
+  <!-- GROUNDING REMINDERS -->
+  <div class="panic-card">
+    <div class="card-label">REMEMBER — RIGHT NOW</div>
+    <ul class="reminder-list">
+      <li><span class="reminder-icon">✦</span>This sensation cannot harm you. It has not harmed you before.</li>
+      <li><span class="reminder-icon">✦</span>Panic peaks and always — always — subsides. You are on the way down.</li>
+      <li><span class="reminder-icon">✦</span>Your job is not to stop it. Your job is to let it happen fully.</li>
+      <li><span class="reminder-icon">✦</span>"Get worse. I demand it." — means you're taking your power back.</li>
+      <li><span class="reminder-icon">✦</span>The anxiety cannot hurt you. The fear of it is the only problem.</li>
+    </ul>
+  </div>
+
+  <div class="panic-card" style="text-align:center">
+    <p style="color:rgba(255,255,255,0.6); font-size:13px; margin-bottom:12px">When it passes, log what happened.</p>
+    <button class="btn btn-accent" onclick="showPage('log'); openLogForm()">Log This Episode →</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── STATE ──
+const STATE_KEY = 'ground_state_v1';
+let state = {
+  streak: 0,
+  lastCheckin: null,
+  entries: []
+};
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STATE_KEY);
+    if (raw) state = { ...state, ...JSON.parse(raw) };
+  } catch(e) {}
+}
+
+function saveState() {
+  try { localStorage.setItem(STATE_KEY, JSON.stringify(state)); } catch(e) {}
+}
+
+// ── NAVIGATION ──
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => {
+    p.classList.remove('active');
+    p.style.display = 'none';
+  });
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+
+  const page = document.getElementById(id + '-page');
+  page.style.display = 'block';
+  setTimeout(() => page.classList.add('active'), 10);
+
+  const tabs = document.querySelectorAll('.nav-tab');
+  const map = { home:0, log:1, exercises:2, panic:3 };
+  if (map[id] !== undefined) tabs[map[id]].classList.add('active');
+
+  // dark background for panic
+  document.body.style.background = id === 'panic' ? '#1a1210' : 'var(--bg)';
+}
+
+// ── HOME ──
+const quotes = [
+  "The only way out is through.",
+  "Discomfort is not danger. You've survived every moment so far.",
+  "Anxiety peaks, and then — without fail — it fades.",
+  "Running towards the fear is the bravest thing you can do.",
+  "Your body is not your enemy. It's just scared.",
+  "Uncertainty is tolerable. You tolerate it every day.",
+  "The checking never reassures — it only delays.",
+  "Every exposure is a vote for the version of you that is free.",
+];
+
+function initHome() {
+  document.getElementById('streak-display').textContent = state.streak;
+  const q = quotes[Math.floor(Math.random() * quotes.length)];
+  document.getElementById('daily-quote').textContent = '"' + q + '"';
+}
+
+function markToday() {
+  const today = new Date().toDateString();
+  if (state.lastCheckin === today) {
+    showToast('Already checked in today ✓');
+    return;
+  }
+  const yesterday = new Date(Date.now() - 86400000).toDateString();
+  state.streak = (state.lastCheckin === yesterday) ? state.streak + 1 : 1;
+  state.lastCheckin = today;
+  saveState();
+  document.getElementById('streak-display').textContent = state.streak;
+  showToast('✓ Day ' + state.streak + ' checked in!');
+}
+
+// ── LOG ──
+function openLogForm() {
+  document.getElementById('log-form').style.display = 'block';
+  document.getElementById('log-form').scrollIntoView({ behavior: 'smooth' });
+}
+function closeLogForm() {
+  document.getElementById('log-form').style.display = 'none';
+  // reset
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+  document.getElementById('log-thought').value = '';
+  document.getElementById('log-notes').value = '';
+  document.getElementById('before-range').value = 5;
+  document.getElementById('after-range').value = 3;
+  document.getElementById('before-val').textContent = 5;
+  document.getElementById('after-val').textContent = 3;
+}
+
+function toggleChip(el) { el.classList.toggle('selected'); }
+
+function saveEntry() {
+  const sensations = [...document.querySelectorAll('#sensation-chips .chip.selected')].map(c => c.textContent);
+  const coping = [...document.querySelectorAll('#coping-chips .chip.selected')].map(c => c.textContent);
+  const before = document.getElementById('before-range').value;
+  const after = document.getElementById('after-range').value;
+  const thought = document.getElementById('log-thought').value.trim();
+  const notes = document.getElementById('log-notes').value.trim();
+
+  if (!sensations.length && !thought) {
+    showToast('Pick at least one sensation ☝️');
+    return;
+  }
+
+  const entry = {
+    id: Date.now(),
+    date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+    time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+    sensations, coping, before: +before, after: +after, thought, notes
+  };
+  state.entries.unshift(entry);
+  saveState();
+  renderEntries();
+  closeLogForm();
+  showToast('Entry saved ✓');
+}
+
+function renderEntries() {
+  const el = document.getElementById('log-entries');
+  if (!state.entries.length) {
+    el.innerHTML = '<div class="log-empty">No entries yet.<br>Facing something? Log it above.</div>';
+    return;
+  }
+  el.innerHTML = state.entries.map(e => {
+    const diff = e.before - e.after;
+    const badge = diff > 0
+      ? `<span class="badge badge-green">↓ ${diff} pts</span>`
+      : diff < 0
+        ? `<span class="badge badge-warm">↑ ${Math.abs(diff)} pts</span>`
+        : `<span class="badge badge-blue">unchanged</span>`;
+    return `
+      <div class="log-entry">
+        <div class="log-dot"></div>
+        <div style="flex:1">
+          <div class="log-entry-title">${e.sensations.join(', ') || e.thought || 'Episode'}</div>
+          <div class="log-entry-meta">${e.date} · ${e.time} · Before: ${e.before}/10 → After: ${e.after}/10 ${badge}</div>
+          ${e.coping.length ? `<div class="log-entry-meta" style="margin-top:4px">Did: ${e.coping.join(', ')}</div>` : ''}
+          ${e.notes ? `<div class="log-entry-meta" style="margin-top:4px;font-style:italic">"${e.notes}"</div>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ── EXERCISES ──
+function toggleExercise(btn) {
+  const body = btn.closest('.exercise-card').querySelector('.collapsible-body');
+  body.classList.toggle('open');
+  btn.textContent = body.classList.contains('open') ? 'Hide ↑' : 'Show steps ↓';
+}
+
+// ── PANIC TOOL ──
+const demands = [
+  "Get worse. I demand it.\nGive me everything you've got.",
+  "More. Bring me more.\nI can handle whatever you give me.",
+  "Is that all you have?\nI'm still here. Still standing.",
+  "Go ahead — peak.\nI'll ride this all the way through.",
+  "I'm not running.\nDo your worst. I'm not afraid.",
+  "Hit me harder.\nI've survived every single time before.",
+];
+let demandIdx = 0;
+
+function cycleDemand() {
+  demandIdx = (demandIdx + 1) % demands.length;
+  const el = document.getElementById('demand-phrase');
+  el.style.opacity = 0;
+  setTimeout(() => {
+    el.innerHTML = demands[demandIdx].replace('\n', '<br>');
+    el.style.opacity = 1;
+  }, 200);
+  el.style.transition = 'opacity 0.2s';
+  showToast('Say it out loud. Mean it. 🔥');
+}
+
+function setIntensity(chip, val) {
+  document.querySelectorAll('#panic-page .chips .chip').forEach(c => {
+    c.style.background = 'rgba(255,255,255,0.06)';
+    c.style.borderColor = 'rgba(255,255,255,0.2)';
+  });
+  chip.style.background = 'var(--accent)';
+  chip.style.borderColor = 'var(--accent)';
+  document.getElementById('intensity-num').textContent = val + '/10';
+  document.getElementById('panic-bar').style.width = (val * 10) + '%';
+}
+
+// Timer
+let timerInterval = null;
+let timerTotal = 300;
+let timerRemaining = 300;
+
+function startTimer(seconds) {
+  if (timerInterval) clearInterval(timerInterval);
+  timerTotal = seconds;
+  timerRemaining = seconds;
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    timerRemaining--;
+    if (timerRemaining <= 0) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      document.getElementById('timer-display').textContent = 'Done ✓';
+      showToast('You rode the wave. Well done. 🌊');
+    } else {
+      updateTimerDisplay();
+    }
+  }, 1000);
+}
+
+function stopTimer() {
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = null;
+  timerRemaining = timerTotal;
+  updateTimerDisplay();
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(timerRemaining / 60);
+  const s = timerRemaining % 60;
+  document.getElementById('timer-display').textContent =
+    m + ':' + String(s).padStart(2, '0');
+  const circ = document.getElementById('timer-circle');
+  const pct = timerRemaining / timerTotal;
+  circ.style.strokeDashoffset = 283 * (1 - pct);
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── INIT ──
+loadState();
+initHome();
+renderEntries();
+
+// Set initial demand phrase
+document.getElementById('demand-phrase').innerHTML = demands[0].replace('\n', '<br>');
+</script>
+</body>
+</html>
